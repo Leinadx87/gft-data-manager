@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>gft-data-manager demo</title>
+    <script src="../build/webcomponents-loader.js"></script>
+    <script src="../build/scoping-ambients-shim.min.js"></script>
+    <script src="../build/custom-style-interface.min.js"></script>
+    <script>
+      {
+        const _customElementsDefine = window.customElements.define;
+        window.customElements.define = (name, cl, conf) => {
+          if (customElements.get(name)) {
+            console.warn(`${name} has been defined twice`);
+          } else {
+            _customElementsDefine.call(window.customElements, name, cl, conf);
+          }
+        };
+      }
+    </script>
+    <script defer src="../build/component.js"></script>
+    <script type="module" crossorigin="use-credentials">
+      import '../build/demo-build.js';
+    </script>
+  </head>
+
+  <body>
+    <bbva-core-demo-helper>
+      <bbva-core-demo-case heading="Basic" description="Default specs">
+        <template>
+          <script type="module">
+              const { GftDataManagerService } = window.DemoHelpers;
+              let instanceDatadManager = new GftDataManagerService();
+              /* instanceDatadManager.metodoBgadp().then(res => {
+                //console.log(res, 'respuesta');
+              }); */
+
+              let dm = document.querySelector('bbva-core-demo-dm-helper');
+              
+              dm.dmMethods = [
+              {
+                event: 'gft-financial-overview-service-data',
+                label: ' FILTER',
+                method: 'getFinancialOverviewService()',
+              },
+
+              {
+                event: 'gft-financial-overview-service-products',
+                label: 'NO FILTER',
+                method: 'getFinancialOverviewService1()',
+              }
+
+            ];
+
+            dm.addEventListener('gft-financial-overview-service-data', () => {
+              instanceDatadManager.getInstanceRespuesta().then( resp => {
+                console.log(JSON.stringify(resp));
+                dm.jsonData = resp;// jsonData me pinta en mi recuadro gris 
+              });
+            })
+
+            dm.addEventListener('gft-financial-overview-service-products', () => {
+              instanceDatadManager.getInstanceBgadp().then(resp => {
+                console.log(JSON.stringify(resp));
+                dm.jsonData = resp
+              });
+            })
+              
+          </script>
+
+          <bbva-core-demo-dm-helper id="dmHelper" without-login="">
+            <div slot="component">
+              <bbva-btge-web-product-selector></bbva-btge-web-product-selector>
+            </div>
+          </bbva-core-demo-dm-helper>
+
+          <gft-data-manager></gft-data-manager>
+        </template>
+      </bbva-core-demo-case>
+    </bbva-core-demo-helper>
+  </body>
+</html>
